@@ -8,9 +8,9 @@ import (
 )
 
 var (
-	input_file  string
-	output_file string
-	force       bool
+	inputFile  string
+	outputFile string
+	force      bool
 )
 
 var rootCmd = &cobra.Command{
@@ -23,8 +23,8 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&input_file, "input", "i", "", "file to be processed")
-	rootCmd.PersistentFlags().StringVarP(&output_file, "output", "o", "", "file to write contents to, omitting means stdout")
+	rootCmd.PersistentFlags().StringVarP(&inputFile, "input", "i", "", "file to be processed")
+	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "", "file to write contents to, omitting means stdout")
 	rootCmd.PersistentFlags().BoolVarP(&force, "force", "f", false, "overwrite existing file")
 	rootCmd.MarkFlagRequired("input")
 }

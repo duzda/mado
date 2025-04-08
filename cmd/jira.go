@@ -17,18 +17,18 @@ var jiraCmd = &cobra.Command{
 	Short: "Convert Markdown to Jira",
 	Long:  "Converts Markdown document to Jira specific format.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		content, err := os.ReadFile(input_file)
+		content, err := os.ReadFile(inputFile)
 		if err != nil {
 			return err
 		}
 
 		var output io.Writer
-		if output_file == "" {
+		if outputFile == "" {
 			stdout := getStdout()
 			defer stdout.Flush()
 			output = stdout
 		} else {
-			f, err := getWriter(output_file, force)
+			f, err := getWriter(outputFile, force)
 			if err != nil {
 				return err
 			}
