@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"io"
-	"os"
 
+	"mado/cmd/utils"
 	"mado/parser"
 
 	"github.com/spf13/cobra"
@@ -14,18 +14,18 @@ var htmlCmd = &cobra.Command{
 	Short: "Convert Markdown to HTML",
 	Long:  "Converts Markdown document to HTML.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		content, err := os.ReadFile(inputFile)
+		content, err := utils.GetContents(inputFile, replaceFile)
 		if err != nil {
 			return err
 		}
 
 		var output io.Writer
 		if outputFile == "" {
-			stdout := getStdout()
+			stdout := utils.GetStdout()
 			defer stdout.Flush()
 			output = stdout
 		} else {
-			f, err := getWriter(outputFile, force)
+			f, err := utils.GetWriter(outputFile, force)
 			if err != nil {
 				return err
 			}
@@ -40,5 +40,7 @@ var htmlCmd = &cobra.Command{
 }
 
 func init() {
+	htmlCmd.Flags().StringVarP(&replaceFile, "replace", "r", "", "file with replaces to be used")
+
 	rootCmd.AddCommand(htmlCmd)
 }

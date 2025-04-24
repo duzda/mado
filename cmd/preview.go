@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io"
-	"os"
+	"mado/cmd/utils"
 
 	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
@@ -14,18 +14,18 @@ var previewCmd = &cobra.Command{
 	Short: "Preview Markdown",
 	Long:  "Renders Markdown document using glamour.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		content, err := os.ReadFile(inputFile)
+		content, err := utils.GetContents(inputFile, replaceFile)
 		if err != nil {
 			return err
 		}
 
 		var output io.Writer
 		if outputFile == "" {
-			stdout := getStdout()
+			stdout := utils.GetStdout()
 			defer stdout.Flush()
 			output = stdout
 		} else {
-			f, err := getWriter(outputFile, force)
+			f, err := utils.GetWriter(outputFile, force)
 			if err != nil {
 				return err
 			}

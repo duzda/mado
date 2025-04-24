@@ -8,9 +8,10 @@ import (
 )
 
 var (
-	inputFile  string
-	outputFile string
-	force      bool
+	inputFile   string
+	outputFile  string
+	force       bool
+	replaceFile string
 )
 
 var rootCmd = &cobra.Command{

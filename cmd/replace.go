@@ -3,19 +3,14 @@ package cmd
 import (
 	"io"
 	"mado/cmd/utils"
-	"mado/parser"
 
 	"github.com/spf13/cobra"
 )
 
-var (
-	language string
-)
-
-var jiraCmd = &cobra.Command{
-	Use:   "jira",
-	Short: "Convert Markdown to Jira",
-	Long:  "Converts Markdown document to Jira specific format.",
+var replaceCmd = &cobra.Command{
+	Use:   "replace",
+	Short: "Replace Markdown",
+	Long:  "Replaces defined occurrences in Markdown.",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		content, err := utils.GetContents(inputFile, replaceFile)
 		if err != nil {
@@ -37,14 +32,13 @@ var jiraCmd = &cobra.Command{
 			output = f
 		}
 
-		parser.ToJira(content, output, language)
+		output.Write(content)
 		return nil
 	},
 }
 
 func init() {
-	jiraCmd.Flags().StringVarP(&language, "language", "l", "javascript", "programming language to be used for code blocks")
-	jiraCmd.Flags().StringVarP(&replaceFile, "replace", "r", "", "file with replaces to be used")
+	replaceCmd.Flags().StringVarP(&replaceFile, "replace", "r", "", "file with replaces to be used")
 
-	rootCmd.AddCommand(jiraCmd)
+	rootCmd.AddCommand(replaceCmd)
 }
