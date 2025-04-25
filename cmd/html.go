@@ -45,7 +45,7 @@ var htmlCmd = &cobra.Command{
 		}
 
 		parser.ToHtml(content, output)
-		return nil
+		return err
 	},
 }
 

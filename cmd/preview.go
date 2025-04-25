@@ -54,7 +54,7 @@ var previewCmd = &cobra.Command{
 			return err
 		}
 
-		return nil
+		return err
 	},
 }
 

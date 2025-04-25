@@ -47,7 +47,7 @@ var replaceCmd = &cobra.Command{
 			return err
 		}
 
-		return nil
+		return err
 	},
 }
 

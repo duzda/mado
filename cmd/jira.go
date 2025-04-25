@@ -48,7 +48,7 @@ var jiraCmd = &cobra.Command{
 		}
 
 		parser.ToJira(content, output, language)
-		return nil
+		return err
 	},
 }
 
