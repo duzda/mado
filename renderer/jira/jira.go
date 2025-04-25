@@ -58,7 +58,7 @@ func (r *Renderer) writeLines(w util.BufWriter, source []byte, node ast.Node) {
 	l := node.Lines().Len()
 	for i := 0; i < l; i++ {
 		line := node.Lines().At(i)
-		w.Write(line.Value(source))
+		_, _ = w.Write(line.Value(source))
 	}
 }
 
@@ -67,7 +67,7 @@ func (r *Renderer) putSpaceIfMissing(w util.BufWriter, source []byte, node ast.N
 	if s != nil && s.Kind() == ast.KindText {
 		seg := s.(*ast.Text).Segment
 		previous := seg.Value(source)
-		if previous != nil && len(previous) > 0 && previous[len(previous)-1] != ' ' {
+		if len(previous) > 0 && previous[len(previous)-1] != ' ' {
 			_ = w.WriteByte(' ')
 		}
 	}

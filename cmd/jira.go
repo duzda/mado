@@ -25,7 +25,12 @@ var jiraCmd = &cobra.Command{
 		var output io.Writer
 		if outputFile == "" {
 			stdout := utils.GetStdout()
-			defer stdout.Flush()
+			defer func() {
+				derr := stdout.Flush()
+				if err == nil {
+					err = derr
+				}
+			}()
 			output = stdout
 		} else {
 			f, err := utils.GetWriter(outputFile, force)
@@ -33,7 +38,12 @@ var jiraCmd = &cobra.Command{
 				return err
 			}
 
-			defer f.Close()
+			defer func() {
+				derr := f.Close()
+				if err == nil {
+					err = derr
+				}
+			}()
 			output = f
 		}
 

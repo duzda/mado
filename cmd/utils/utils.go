@@ -45,7 +45,7 @@ func getReplacements(replacementsFilename string) (map[string]string, error) {
 
 		parts := strings.Split(line, "=>")
 		if len(parts) != 2 {
-			return nil, fmt.Errorf("Invalid line, \"=>\" not found.")
+			return nil, fmt.Errorf("invalid line, \"=>\" not found")
 		}
 
 		replacementsMap[strings.TrimSpace(parts[0])] = strings.TrimSpace(parts[1])
@@ -74,6 +74,9 @@ func getTransformedInput(inputFile string, replaceFile string) ([]byte, error) {
 }
 
 func GetContents(inputFile string, replaceFile string) ([]byte, error) {
+	if inputFile == "" {
+		return nil, fmt.Errorf("please supply input file")
+	}
 	if replaceFile == "" {
 		return os.ReadFile(inputFile)
 	} else {

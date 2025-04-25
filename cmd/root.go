@@ -27,7 +27,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&inputFile, "input", "i", "", "file to be processed")
 	rootCmd.PersistentFlags().StringVarP(&outputFile, "output", "o", "", "file to write contents to, omitting means stdout")
 	rootCmd.PersistentFlags().BoolVarP(&force, "force", "f", false, "overwrite existing file")
-	rootCmd.MarkFlagRequired("input")
 }
 
 func Execute() {
