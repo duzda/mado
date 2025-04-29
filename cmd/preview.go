@@ -3,10 +3,12 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"mado/cmd/internal"
 	"mado/cmd/utils"
 
 	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var previewCmd = &cobra.Command{
@@ -14,12 +16,13 @@ var previewCmd = &cobra.Command{
 	Short: "Preview Markdown",
 	Long:  "Renders Markdown document using glamour.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		content, err := utils.GetContents(inputFile, replaceFile)
+		content, err := utils.GetContents(viper.GetString(internal.InputFileVar), viper.GetString(internal.ReplaceFileVar))
 		if err != nil {
 			return err
 		}
 
 		var output io.Writer
+		outputFile := viper.GetString(internal.OutputFileVar)
 		if outputFile == "" {
 			stdout := utils.GetStdout()
 			defer func() {
@@ -30,7 +33,7 @@ var previewCmd = &cobra.Command{
 			}()
 			output = stdout
 		} else {
-			f, err := utils.GetWriter(outputFile, force)
+			f, err := utils.GetWriter(outputFile, viper.GetBool(internal.ForceVar))
 			if err != nil {
 				return err
 			}
