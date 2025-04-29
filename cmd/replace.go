@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"io"
+	"mado/cmd/internal"
 	"mado/cmd/utils"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var replaceCmd = &cobra.Command{
@@ -12,12 +14,13 @@ var replaceCmd = &cobra.Command{
 	Short: "Replace Markdown",
 	Long:  "Replaces defined occurrences in Markdown.",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		content, err := utils.GetContents(inputFile, replaceFile)
+		content, err := utils.GetContents(viper.GetString(internal.InputFileVar), viper.GetString(internal.ReplaceFileVar))
 		if err != nil {
 			return err
 		}
 
 		var output io.Writer
+		outputFile := viper.GetString(internal.OutputFileVar)
 		if outputFile == "" {
 			stdout := utils.GetStdout()
 			defer func() {
@@ -28,7 +31,7 @@ var replaceCmd = &cobra.Command{
 			}()
 			output = stdout
 		} else {
-			f, err := utils.GetWriter(outputFile, force)
+			f, err := utils.GetWriter(outputFile, viper.GetBool(internal.ForceVar))
 			if err != nil {
 				return err
 			}
@@ -52,7 +55,8 @@ var replaceCmd = &cobra.Command{
 }
 
 func init() {
-	replaceCmd.Flags().StringVarP(&replaceFile, "replace", "r", "", "file with replaces to be used")
+	replaceCmd.Flags().StringVarP(&internal.ReplaceFile, internal.ReplaceFileVar, "r", viper.GetString(internal.ReplaceFileVar), "file to write contents to, omitting means stdout")
+	_ = viper.BindPFlag(internal.ReplaceFileVar, replaceCmd.Flags().Lookup(internal.ReplaceFileVar))
 
 	rootCmd.AddCommand(replaceCmd)
 }
