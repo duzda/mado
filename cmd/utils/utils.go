@@ -2,8 +2,10 @@ package utils
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -54,18 +56,13 @@ func getReplacements(replacementsFilename string) (map[string]string, error) {
 	return replacementsMap, nil
 }
 
-func getTransformedInput(inputFile string, replaceFile string) ([]byte, error) {
-	content, err := os.ReadFile(inputFile)
-	if err != nil {
-		return nil, err
-	}
-
+func getTransformedContents(contents []byte, replaceFile string) ([]byte, error) {
 	replacementsMap, err := getReplacements(replaceFile)
 	if err != nil {
 		return nil, err
 	}
 
-	var transformedContent = string(content)
+	var transformedContent = string(contents)
 	for k, v := range replacementsMap {
 		transformedContent = strings.ReplaceAll(transformedContent, k, v)
 	}
@@ -73,13 +70,57 @@ func getTransformedInput(inputFile string, replaceFile string) ([]byte, error) {
 	return []byte(transformedContent), nil
 }
 
-func GetContents(inputFile string, replaceFile string) ([]byte, error) {
+func getContentsInteractively() ([]byte, error) {
+	file, err := os.CreateTemp("", "mado-*")
+	defer func() {
+		err = errors.Join(err, os.Remove(file.Name()))
+	}()
+	if err != nil {
+		return nil, err
+	}
+
+	editor := os.Getenv("EDITOR")
+	if editor == "" {
+		return nil, fmt.Errorf("$EDITOR is not set, can't get input interactively")
+	}
+
+	cmd := exec.Command(editor, file.Name())
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	err = cmd.Run()
+	if err != nil {
+		return nil, err
+	}
+
+	contents, err := os.ReadFile(file.Name())
+	if err != nil {
+		return nil, err
+	}
+
+	return contents, err
+}
+
+func GetContents(inputFile string, replaceFile string) (contents []byte, err error) {
 	if inputFile == "" {
-		return nil, fmt.Errorf("please supply input file")
-	}
-	if replaceFile == "" {
-		return os.ReadFile(inputFile)
+		contents, err = getContentsInteractively()
 	} else {
-		return getTransformedInput(inputFile, replaceFile)
+		contents, err = os.ReadFile(inputFile)
 	}
+
+	if err != nil {
+		return nil, err
+	}
+
+	if replaceFile != "" {
+		contents, err = getTransformedContents(contents, replaceFile)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return contents, nil
+}
+
+func JoinErrors(err *error, fn func() error) {
+	*err = errors.Join(*err, fn())
 }
