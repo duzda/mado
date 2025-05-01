@@ -25,12 +25,7 @@ var previewCmd = &cobra.Command{
 		outputFile := viper.GetString(internal.OutputFileVar)
 		if outputFile == "" {
 			stdout := utils.GetStdout()
-			defer func() {
-				derr := stdout.Flush()
-				if err == nil {
-					err = derr
-				}
-			}()
+			defer utils.JoinErrors(&err, stdout.Flush)
 			output = stdout
 		} else {
 			f, err := utils.GetWriter(outputFile, viper.GetBool(internal.ForceVar))
@@ -38,12 +33,7 @@ var previewCmd = &cobra.Command{
 				return err
 			}
 
-			defer func() {
-				derr := f.Close()
-				if err == nil {
-					err = derr
-				}
-			}()
+			defer utils.JoinErrors(&err, f.Close)
 			output = f
 		}
 
