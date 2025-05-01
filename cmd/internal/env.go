@@ -14,6 +14,7 @@ func SetEnvironment() {
 	viper.SetDefault(ForceVar, false)
 	viper.SetDefault(ReplaceFileVar, "")
 	viper.SetDefault(LanguageVar, "javascript")
+	viper.SetDefault(Config, "")
 }
 
 const (

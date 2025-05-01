@@ -14,11 +14,16 @@ var rootCmd = &cobra.Command{
 	Short: "Convert Markdown to HTML and Jira",
 	Long:  "Mado is a tool to convert Markdown to HTML, Jira and preview the contents.",
 	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
-		viper.SetConfigFile(viper.GetString(internal.ConfigVar))
+		configFile := viper.GetString(internal.ConfigVar)
+		if configFile == "" {
+			return nil
+		}
+
+		viper.SetConfigFile(configFile)
 		viper.SetConfigType("env")
 		err := viper.ReadInConfig()
 		if err != nil {
-			fmt.Fprintln(os.Stderr, "Can't read config file")
+			fmt.Fprintln(os.Stderr, "Can't read config file: "+configFile)
 		}
 
 		return err
