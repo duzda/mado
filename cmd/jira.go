@@ -42,6 +42,12 @@ var jiraCmd = &cobra.Command{
 }
 
 func init() {
+	jiraCmd.PersistentFlags().StringVarP(&internal.OutputFile, internal.OutputFileVar, "o", viper.GetString(internal.OutputFileVar), "file to write contents to, omitting means stdout")
+	_ = viper.BindPFlag(internal.OutputFileVar, jiraCmd.PersistentFlags().Lookup(internal.OutputFileVar))
+
+	jiraCmd.PersistentFlags().BoolVarP(&internal.Force, internal.ForceVar, "f", viper.GetBool(internal.ForceVar), "overwrite existing file")
+	_ = viper.BindPFlag(internal.ForceVar, jiraCmd.PersistentFlags().Lookup(internal.ForceVar))
+
 	jiraCmd.Flags().StringVarP(&internal.Language, internal.LanguageVar, "l", viper.GetString(internal.LanguageVar), "programming language to be used for code blocks")
 	_ = viper.BindPFlag(internal.LanguageVar, jiraCmd.Flags().Lookup(internal.LanguageVar))
 

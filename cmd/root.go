@@ -39,14 +39,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVarP(&internal.Config, internal.ConfigVar, "c", viper.GetString(internal.ConfigVar), "path to env file to be loaded")
 	_ = viper.BindPFlag(internal.ConfigVar, rootCmd.PersistentFlags().Lookup(internal.ConfigVar))
 
-	rootCmd.PersistentFlags().StringVarP(&internal.InputFile, internal.InputFileVar, "i", viper.GetString(internal.InputFileVar), "file to be processed")
+	rootCmd.PersistentFlags().StringVarP(&internal.InputFile, internal.InputFileVar, "i", viper.GetString(internal.InputFileVar), "file to be processed, omit for interactive input")
 	_ = viper.BindPFlag(internal.InputFileVar, rootCmd.PersistentFlags().Lookup(internal.InputFileVar))
-
-	rootCmd.PersistentFlags().StringVarP(&internal.OutputFile, internal.OutputFileVar, "o", viper.GetString(internal.OutputFileVar), "file to write contents to, omitting means stdout")
-	_ = viper.BindPFlag(internal.OutputFileVar, rootCmd.PersistentFlags().Lookup(internal.OutputFileVar))
-
-	rootCmd.PersistentFlags().BoolVarP(&internal.Force, internal.ForceVar, "f", viper.GetBool(internal.ForceVar), "overwrite existing file")
-	_ = viper.BindPFlag(internal.ForceVar, rootCmd.PersistentFlags().Lookup(internal.ForceVar))
 }
 
 func Execute() {
