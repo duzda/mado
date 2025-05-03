@@ -45,6 +45,12 @@ var replaceCmd = &cobra.Command{
 }
 
 func init() {
+	replaceCmd.PersistentFlags().StringVarP(&internal.OutputFile, internal.OutputFileVar, "o", viper.GetString(internal.OutputFileVar), "file to write contents to, omitting means stdout")
+	_ = viper.BindPFlag(internal.OutputFileVar, replaceCmd.PersistentFlags().Lookup(internal.OutputFileVar))
+
+	replaceCmd.PersistentFlags().BoolVarP(&internal.Force, internal.ForceVar, "f", viper.GetBool(internal.ForceVar), "overwrite existing file")
+	_ = viper.BindPFlag(internal.ForceVar, replaceCmd.PersistentFlags().Lookup(internal.ForceVar))
+
 	replaceCmd.Flags().StringVarP(&internal.ReplaceFile, internal.ReplaceFileVar, "r", viper.GetString(internal.ReplaceFileVar), "file to write contents to, omitting means stdout")
 	_ = viper.BindPFlag(internal.ReplaceFileVar, replaceCmd.Flags().Lookup(internal.ReplaceFileVar))
 

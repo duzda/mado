@@ -43,6 +43,12 @@ var htmlCmd = &cobra.Command{
 }
 
 func init() {
+	htmlCmd.PersistentFlags().StringVarP(&internal.OutputFile, internal.OutputFileVar, "o", viper.GetString(internal.OutputFileVar), "file to write contents to, omitting means stdout")
+	_ = viper.BindPFlag(internal.OutputFileVar, htmlCmd.PersistentFlags().Lookup(internal.OutputFileVar))
+
+	htmlCmd.PersistentFlags().BoolVarP(&internal.Force, internal.ForceVar, "f", viper.GetBool(internal.ForceVar), "overwrite existing file")
+	_ = viper.BindPFlag(internal.ForceVar, htmlCmd.PersistentFlags().Lookup(internal.ForceVar))
+
 	htmlCmd.Flags().StringVarP(&internal.ReplaceFile, internal.ReplaceFileVar, "r", viper.GetString(internal.ReplaceFileVar), "file to write contents to, omitting means stdout")
 	_ = viper.BindPFlag(internal.ReplaceFileVar, htmlCmd.Flags().Lookup(internal.ReplaceFileVar))
 

@@ -14,7 +14,8 @@ func SetEnvironment() {
 	viper.SetDefault(ForceVar, false)
 	viper.SetDefault(ReplaceFileVar, "")
 	viper.SetDefault(LanguageVar, "javascript")
-	viper.SetDefault(Config, "")
+	viper.SetDefault(ConfigVar, "")
+	viper.SetDefault(ThemeVar, "")
 }
 
 const (
@@ -24,6 +25,7 @@ const (
 	ReplaceFileVar = "replace"
 	LanguageVar    = "language"
 	ConfigVar      = "config"
+	ThemeVar       = "theme"
 )
 
 var (
@@ -33,4 +35,5 @@ var (
 	ReplaceFile string
 	Language    string
 	Config      string
+	Theme       string
 )

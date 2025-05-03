@@ -1,15 +1,22 @@
 package cmd
 
 import (
-	"fmt"
-	"io"
 	"mado/cmd/internal"
 	"mado/cmd/utils"
+	"mado/renderer/preview"
 
 	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+
+func getGlamourStyle(theme string) glamour.TermRendererOption {
+	if theme == "" {
+		return glamour.WithAutoStyle()
+	}
+
+	return glamour.WithStylePath(theme)
+}
 
 var previewCmd = &cobra.Command{
 	Use:   "preview",
@@ -21,36 +28,13 @@ var previewCmd = &cobra.Command{
 			return err
 		}
 
-		var output io.Writer
-		outputFile := viper.GetString(internal.OutputFileVar)
-		if outputFile == "" {
-			stdout := utils.GetStdout()
-			defer utils.JoinErrors(&err, stdout.Flush)
-			output = stdout
-		} else {
-			f, err := utils.GetWriter(outputFile, viper.GetBool(internal.ForceVar))
-			if err != nil {
-				return err
-			}
-
-			defer utils.JoinErrors(&err, f.Close)
-			output = f
-		}
-
-		out, err := glamour.RenderWithEnvironmentConfig(string(content))
-		if err != nil {
-			return err
-		}
-
-		_, err = fmt.Fprint(output, out)
-		if err != nil {
-			return err
-		}
-
-		return err
+		return preview.RenderPreview(string(content), getGlamourStyle(viper.GetString(internal.ThemeVar)))
 	},
 }
 
 func init() {
+	previewCmd.PersistentFlags().StringVarP(&internal.Theme, internal.ThemeVar, "t", viper.GetString(internal.ThemeVar), "glamour theme or style file")
+	_ = viper.BindPFlag(internal.ThemeVar, previewCmd.PersistentFlags().Lookup(internal.ThemeVar))
+
 	rootCmd.AddCommand(previewCmd)
 }
