@@ -14,6 +14,12 @@ var jiraCmd = &cobra.Command{
 	Use:   "jira",
 	Short: "Convert Markdown to Jira",
 	Long:  "Converts Markdown document to Jira specific format.",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		_ = viper.BindPFlag(internal.OutputFileVar, cmd.Flags().Lookup(internal.OutputFileVar))
+		_ = viper.BindPFlag(internal.ForceVar, cmd.Flags().Lookup(internal.ForceVar))
+		_ = viper.BindPFlag(internal.LanguageVar, cmd.Flags().Lookup(internal.LanguageVar))
+		_ = viper.BindPFlag(internal.ReplaceFileVar, cmd.Flags().Lookup(internal.ReplaceFileVar))
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		content, err := utils.GetContents(viper.GetString(internal.InputFileVar), viper.GetString(internal.ReplaceFileVar))
 		if err != nil {
@@ -42,17 +48,10 @@ var jiraCmd = &cobra.Command{
 }
 
 func init() {
-	jiraCmd.PersistentFlags().StringVarP(&internal.OutputFile, internal.OutputFileVar, "o", viper.GetString(internal.OutputFileVar), "file to write contents to, omitting means stdout")
-	_ = viper.BindPFlag(internal.OutputFileVar, jiraCmd.PersistentFlags().Lookup(internal.OutputFileVar))
-
-	jiraCmd.PersistentFlags().BoolVarP(&internal.Force, internal.ForceVar, "f", viper.GetBool(internal.ForceVar), "overwrite existing file")
-	_ = viper.BindPFlag(internal.ForceVar, jiraCmd.PersistentFlags().Lookup(internal.ForceVar))
-
+	jiraCmd.Flags().StringVarP(&internal.OutputFile, internal.OutputFileVar, "o", viper.GetString(internal.OutputFileVar), "file to write contents to, omitting means stdout")
+	jiraCmd.Flags().BoolVarP(&internal.Force, internal.ForceVar, "f", viper.GetBool(internal.ForceVar), "overwrite existing file")
 	jiraCmd.Flags().StringVarP(&internal.Language, internal.LanguageVar, "l", viper.GetString(internal.LanguageVar), "programming language to be used for code blocks")
-	_ = viper.BindPFlag(internal.LanguageVar, jiraCmd.Flags().Lookup(internal.LanguageVar))
-
-	jiraCmd.Flags().StringVarP(&internal.ReplaceFile, internal.ReplaceFileVar, "r", viper.GetString(internal.ReplaceFileVar), "file to write contents to, omitting means stdout")
-	_ = viper.BindPFlag(internal.ReplaceFileVar, jiraCmd.Flags().Lookup(internal.ReplaceFileVar))
+	jiraCmd.Flags().StringVarP(&internal.ReplaceFile, internal.ReplaceFileVar, "r", viper.GetString(internal.ReplaceFileVar), "path to replacements file")
 
 	rootCmd.AddCommand(jiraCmd)
 }
