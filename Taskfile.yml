@@ -1,0 +1,17 @@
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - go build
+
+  test:
+    cmds:
+      - go build -cover
+      - rm -rf .coverdata
+      - mkdir .coverdata
+      - rm -rf tests/actual
+      - mkdir tests/actual
+      - go test ./tests -v

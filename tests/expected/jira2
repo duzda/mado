@@ -1,0 +1,24 @@
+h1. Test
+
+This is _an_ advanced *test*:
+
+* First item
+* Second item
+
+# Item
+# Item
+
+h2. Subject
+<!-- Comment -->
+
+{quote}
+Quoted
+{quote}
+
+Handles quotes well and handles [links|https://www.github.com/duzda/mado]
+
+We even got {{monospace}} and some code here:
+
+{code:bash}
+$ mado ...
+{code}
