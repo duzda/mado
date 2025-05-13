@@ -15,6 +15,11 @@ var htmlCmd = &cobra.Command{
 	Use:   "html",
 	Short: "Convert Markdown to HTML",
 	Long:  "Converts Markdown document to HTML.",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		_ = viper.BindPFlag(internal.OutputFileVar, cmd.Flags().Lookup(internal.OutputFileVar))
+		_ = viper.BindPFlag(internal.ForceVar, cmd.Flags().Lookup(internal.ForceVar))
+		_ = viper.BindPFlag(internal.ReplaceFileVar, cmd.Flags().Lookup(internal.ReplaceFileVar))
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		content, err := utils.GetContents(viper.GetString(internal.InputFileVar), viper.GetString(internal.ReplaceFileVar))
 		if err != nil {
@@ -43,14 +48,9 @@ var htmlCmd = &cobra.Command{
 }
 
 func init() {
-	htmlCmd.PersistentFlags().StringVarP(&internal.OutputFile, internal.OutputFileVar, "o", viper.GetString(internal.OutputFileVar), "file to write contents to, omitting means stdout")
-	_ = viper.BindPFlag(internal.OutputFileVar, htmlCmd.PersistentFlags().Lookup(internal.OutputFileVar))
-
-	htmlCmd.PersistentFlags().BoolVarP(&internal.Force, internal.ForceVar, "f", viper.GetBool(internal.ForceVar), "overwrite existing file")
-	_ = viper.BindPFlag(internal.ForceVar, htmlCmd.PersistentFlags().Lookup(internal.ForceVar))
-
-	htmlCmd.Flags().StringVarP(&internal.ReplaceFile, internal.ReplaceFileVar, "r", viper.GetString(internal.ReplaceFileVar), "file to write contents to, omitting means stdout")
-	_ = viper.BindPFlag(internal.ReplaceFileVar, htmlCmd.Flags().Lookup(internal.ReplaceFileVar))
+	htmlCmd.Flags().StringVarP(&internal.OutputFile, internal.OutputFileVar, "o", viper.GetString(internal.OutputFileVar), "file to write contents to, omitting means stdout")
+	htmlCmd.Flags().BoolVarP(&internal.Force, internal.ForceVar, "f", viper.GetBool(internal.ForceVar), "overwrite existing file")
+	htmlCmd.Flags().StringVarP(&internal.ReplaceFile, internal.ReplaceFileVar, "r", viper.GetString(internal.ReplaceFileVar), "path to replacements file")
 
 	rootCmd.AddCommand(htmlCmd)
 }

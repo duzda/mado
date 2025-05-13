@@ -22,6 +22,9 @@ var previewCmd = &cobra.Command{
 	Use:   "preview",
 	Short: "Preview Markdown",
 	Long:  "Renders Markdown document using glamour.",
+	PreRun: func(cmd *cobra.Command, args []string) {
+		_ = viper.BindPFlag(internal.ThemeVar, cmd.Flags().Lookup(internal.ThemeVar))
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		content, err := utils.GetContents(viper.GetString(internal.InputFileVar), viper.GetString(internal.ReplaceFileVar))
 		if err != nil {
@@ -33,8 +36,7 @@ var previewCmd = &cobra.Command{
 }
 
 func init() {
-	previewCmd.PersistentFlags().StringVarP(&internal.Theme, internal.ThemeVar, "t", viper.GetString(internal.ThemeVar), "glamour theme or style file")
-	_ = viper.BindPFlag(internal.ThemeVar, previewCmd.PersistentFlags().Lookup(internal.ThemeVar))
+	previewCmd.Flags().StringVarP(&internal.Theme, internal.ThemeVar, "t", viper.GetString(internal.ThemeVar), "glamour theme or style file")
 
 	rootCmd.AddCommand(previewCmd)
 }
